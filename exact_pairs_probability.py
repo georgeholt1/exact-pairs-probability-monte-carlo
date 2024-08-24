@@ -1,5 +1,6 @@
 import argparse
 import math
+from itertools import combinations
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -87,6 +88,14 @@ class ProbabilityExperiment:
         """
         To be implemented by child classes. Calculates the true
         probability of the case being tested.
+
+        Must set the attribute `true_probability` to the calculated
+        probability.
+
+        Returns
+        -------
+        float
+            True probability.
         """
         raise NotImplementedError
 
@@ -126,7 +135,7 @@ class AllUnique(ProbabilityExperiment):
 
     Parameters
     ----------
-    n : in
+    n : int
         Number of participants.
     m : int
         Number of items.
@@ -176,6 +185,86 @@ class AllUnique(ProbabilityExperiment):
         return self.true_probability
 
 
+class NoExactPairs(ProbabilityExperiment):
+    """
+    Child class to perform probability experiments and calculate
+    probabilities for the case where there are no exact pairs. That is,
+    no two participants choose the same item, but there may be groups of
+    three or more participants choosing the same item.
+
+    Parameters
+    ----------
+    n : int
+        Number of participants.
+    m : int
+        Number of items.
+    k : int
+        Number of experiments.
+    seed : int
+        Seed for the random number generator.
+
+    Methods
+    -------
+    run_experiment()
+        Performs a single experiment to check if there are any exact
+        pairs.
+    calculate_true_probability()
+        Calculates the true probability of no exact pairs.
+    """
+
+    def run_experiment(self):
+        """
+        Performs a single experiment to check if there are any exact
+        pairs.
+
+        Returns
+        -------
+        bool
+            True if there are any exact pairs, False otherwise.
+        """
+        choices = self.rng.integers(1, self.m + 1, self.n)
+        _, counts = np.unique(choices, return_counts=True)
+        return np.all(counts != 2)
+
+    def calculate_true_probability(self):
+        """
+        Calculates the true probability of no exact pairs.
+
+        Returns
+        -------
+        float
+            True probability
+        """
+
+        def multinomial_coefficient(*args):
+            """Calculate the multinomial coefficient."""
+            return math.factorial(sum(args)) // math.prod(
+                math.factorial(x) for x in args
+            )
+
+        def p_a_i_1_to_k(k):
+            """Calculate the probability of having exactly k pairs."""
+            return (
+                multinomial_coefficient(*([2] * k + [self.n - 2 * k]))
+                * (1 / self.m) ** (2 * k)
+                * ((self.m - k) / self.m) ** (self.n - 2 * k)
+            )
+
+        min_k = min(self.m, self.n // 2)
+        sum_terms = 0
+
+        for k in range(1, min_k + 1):
+            combs = combinations(range(self.m), k)
+            sum_k_terms = sum(p_a_i_1_to_k(k) for _ in combs)
+            sum_terms += (-1) ** (k + 1) * sum_k_terms
+
+        p_at_least_one_exact_pair = sum_terms
+        p_no_exact_pairs = 1 - p_at_least_one_exact_pair
+
+        self.true_probability = p_no_exact_pairs
+        return self.true_probability
+
+
 def main(n, m, k, experiment_type="all_unique"):
     """
     Main function to run the probability experiments, calculate
@@ -194,6 +283,8 @@ def main(n, m, k, experiment_type="all_unique"):
     """
     if experiment_type == "all_unique":
         experiment = AllUnique(n, m, k)
+    elif experiment_type == "no_exact_pairs":
+        experiment = NoExactPairs(n, m, k)
     else:
         raise ValueError("Invalid experiment type")
 
@@ -210,18 +301,19 @@ def main(n, m, k, experiment_type="all_unique"):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Exact pairs probability")
     parser.add_argument(
-        "--n", type=int, default=5, help="Number of participants"
+        "-n", type=int, default=5, help="Number of participants"
     )
-    parser.add_argument("--m", type=int, default=26, help="Number of items")
+    parser.add_argument("-m", type=int, default=26, help="Number of items")
     parser.add_argument(
-        "--k", type=int, default=1000000, help="Number of experiments"
+        "-k", type=int, default=1000000, help="Number of experiments"
     )
     parser.add_argument(
         "--experiment_type",
         type=str,
         default="all_unique",
         help="Type of experiment to run",
+        choices=["all_unique", "no_exact_pairs"],
     )
     args = parser.parse_args()
 
-    main(args.n, args.m, args.k)
+    main(args.n, args.m, args.k, args.experiment_type)
