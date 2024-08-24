@@ -127,10 +127,6 @@ def main(n, m, k):
     k : int
         Number of experiments
     """
-    n = 5  # Number of participants
-    m = 26  # Number of items
-    k = 1000000  # Number of experiments
-
     experiment = ProbabilityExperiment(n, m, k)
 
     print("Running experiments...")
