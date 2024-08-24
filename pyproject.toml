@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "exact-pairs-probability"
+description = ""
+authors = ["George Holt <george_holt77@yahoo.co.uk>"]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^2.1.0"
+matplotlib = "^3.9.2"
+tqdm = "^4.66.5"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.8.0"
+ipython = "^8.26.0"
+pre-commit = "^3.8.0"
+flake8 = "^7.1.1"
+isort = "^5.13.2"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 79
