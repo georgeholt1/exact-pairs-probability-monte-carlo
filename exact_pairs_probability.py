@@ -57,7 +57,7 @@ class ProbabilityExperiment:
         unique_choices = np.unique(choices)
         return len(unique_choices) == self.n
 
-    def calculate_probability(self):
+    def simulate_probability(self):
         """
         Runs multiple experiments and calculates the probability of all
         participants choosing different items.
@@ -68,9 +68,10 @@ class ProbabilityExperiment:
             Calculated probability.
         """
         self.results = [self.run_experiment() for _ in tqdm(range(self.k))]
-        return np.mean(self.results)
+        self.simulated_probability = np.mean(self.results)
+        return self.simulated_probability
 
-    def true_probability(self):
+    def calculate_true_probability(self):
         """
         Calculates the true probability of all participants choosing
         different items.
@@ -80,21 +81,15 @@ class ProbabilityExperiment:
         float
             True probability.
         """
-        return math.factorial(self.m) / (
+        self.true_probability = math.factorial(self.m) / (
             self.m**self.n * math.factorial(self.m - self.n)
         )
+        return self.true_probability
 
-    def plot_results(self, calculated_prob, true_prob):
+    def plot_results(self):
         """
         Plots the calculated probability as a function of the number of
         experiments and compares it with the true probability.
-
-        Parameters
-        ----------
-        calculated_prob : float
-            Calculated probability from the experiments.
-        true_prob : float
-            True probability.
         """
         fig, ax = plt.subplots(figsize=(10, 6), constrained_layout=True)
         ax.plot(
@@ -104,11 +99,17 @@ class ProbabilityExperiment:
         ax.set_xlabel("Number of experiments")
         ax.set_ylabel("Probability")
         ax.axhline(
-            true_prob, color="red", linestyle="--", label="True probability"
+            self.true_probability,
+            color="red",
+            linestyle="--",
+            label="True probability",
         )
         ax.legend()
         ax.grid()
-        ax.set_ylim(true_prob - true_prob / 100, true_prob + true_prob / 100)
+        ax.set_ylim(
+            self.true_probability - self.true_probability / 100,
+            self.true_probability + self.true_probability / 100,
+        )
         ax.set_xlim(0, self.k)
         plt.show()
 
@@ -130,13 +131,13 @@ def main(n, m, k):
     experiment = ProbabilityExperiment(n, m, k)
 
     print("Running experiments...")
-    calculated_prob = experiment.calculate_probability()
-    print(f"Calculated Probability: {calculated_prob:.6f}")
+    simulated_prob = experiment.simulate_probability()
+    print(f"Simulated Probability: {simulated_prob:.6f}")
 
     true_prob = experiment.true_probability()
     print(f"True Probability: {true_prob:.6f}")
 
-    experiment.plot_results(calculated_prob, true_prob)
+    experiment.plot_results(simulated_prob, true_prob)
 
 
 if __name__ == "__main__":
