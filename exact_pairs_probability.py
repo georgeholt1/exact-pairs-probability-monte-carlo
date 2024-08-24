@@ -192,7 +192,10 @@ def main(n, m, k, experiment_type="all_unique"):
     experiment_type : str
         Type of experiment to run. Default is "all_unique".
     """
-    experiment = ProbabilityExperiment(n, m, k)
+    if experiment_type == "all_unique":
+        experiment = AllUnique(n, m, k)
+    else:
+        raise ValueError("Invalid experiment type")
 
     print("Running experiments...")
     simulated_prob = experiment.simulate_probability()
