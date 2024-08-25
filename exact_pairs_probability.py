@@ -126,6 +126,21 @@ class ProbabilityExperiment:
         ax.set_xlim(0, self.k)
         plt.show()
 
+    def save_results(self, filename):
+        """
+        Save the results of the experiments to a file.
+
+        Parameters
+        ----------
+        filename : str
+            Name of the file to save the results.
+        """
+        if not filename.endswith("_results"):
+            filename += "_results"
+        if not filename.endswith(".txt"):
+            filename += ".txt"
+        np.savetxt(filename, self.results)
+
 
 class AllUnique(ProbabilityExperiment):
     """
@@ -135,14 +150,7 @@ class AllUnique(ProbabilityExperiment):
 
     Parameters
     ----------
-    n : int
-        Number of participants.
-    m : int
-        Number of items.
-    k : int
-        Number of experiments.
-    seed : int
-        Seed for the random number generator.
+    See ProbabilityExperiment class.
 
     Methods
     -------
@@ -194,14 +202,7 @@ class NoExactPairs(ProbabilityExperiment):
 
     Parameters
     ----------
-    n : int
-        Number of participants.
-    m : int
-        Number of items.
-    k : int
-        Number of experiments.
-    seed : int
-        Seed for the random number generator.
+    See ProbabilityExperiment class.
 
     Methods
     -------
@@ -265,7 +266,7 @@ class NoExactPairs(ProbabilityExperiment):
         return self.true_probability
 
 
-def main(n, m, k, experiment_type="all_unique"):
+def main(n, m, k, experiment_type="all_unique", save_filename=None):
     """
     Main function to run the probability experiments, calculate
     probabilities, and plot the results.
@@ -280,6 +281,9 @@ def main(n, m, k, experiment_type="all_unique"):
         Number of experiments
     experiment_type : str
         Type of experiment to run. Default is "all_unique".
+    save_filename : str
+        Name of the file to save the results. Default is None, which
+        does not save the results.
     """
     if experiment_type == "all_unique":
         experiment = AllUnique(n, m, k)
@@ -296,6 +300,9 @@ def main(n, m, k, experiment_type="all_unique"):
     print(f"True Probability: {true_prob:.6f}")
 
     experiment.plot_results()
+
+    if save_filename is not None:
+        experiment.save_results(save_filename)
 
 
 if __name__ == "__main__":
@@ -314,6 +321,13 @@ if __name__ == "__main__":
         help="Type of experiment to run",
         choices=["all_unique", "no_exact_pairs"],
     )
+    parser.add_argument(
+        "--save_filename",
+        type=str,
+        default=None,
+        help="Name of the file to save the results. "
+        + "No file is saved if not provided.",
+    )
     args = parser.parse_args()
 
-    main(args.n, args.m, args.k, args.experiment_type)
+    main(args.n, args.m, args.k, args.experiment_type, args.save_filename)

@@ -1,3 +1,6 @@
 # Poetry
 .venv
 poetry.lock
+
+# Results files
+*_results.txt
