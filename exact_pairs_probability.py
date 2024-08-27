@@ -16,7 +16,7 @@ class ProbabilityExperiment:
 
     Parameters
     ----------
-    n : in
+    n : int
         Number of participants.
     m : int
         Number of items.
