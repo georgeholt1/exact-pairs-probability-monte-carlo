@@ -4,3 +4,4 @@ poetry.lock
 
 # Results files
 *_results.txt
+*_results.png

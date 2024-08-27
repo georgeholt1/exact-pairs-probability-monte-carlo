@@ -325,8 +325,8 @@ if __name__ == "__main__":
         "--save_filename",
         type=str,
         default=None,
-        help="Name of the file to save the results. "
-        + "No file is saved if not provided.",
+        help="Name of the file to save the results. _results.txt is added to "
+        + "the end of the filename. No file is saved if not provided.",
     )
     args = parser.parse_args()
 

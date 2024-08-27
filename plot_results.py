@@ -31,7 +31,11 @@ class ResultsPlotter:
         return self.results
 
     def plot_cumulative_probability(
-        self, true_probability=None, xlim=(None, None), ylim=(None, None)
+        self,
+        true_probability=None,
+        xlim=(None, None),
+        ylim=(None, None),
+        title=None,
     ):
         """
         Plot the cumulative calculated probability of the experiment results.
@@ -44,6 +48,8 @@ class ResultsPlotter:
             Limits for the x-axis, by default (None, None)
         ylim : tuple, optional
             Limits for the y-axis, by default (None, None)
+        title : str, optional
+            Title of the plot, by default None
         """
         fig, ax = plt.subplots(
             figsize=(5, 3.5), constrained_layout=True, dpi=300
@@ -65,6 +71,28 @@ class ResultsPlotter:
         ax.grid()
         ax.set_ylim(ylim)
         ax.set_xlim(xlim)
+        if title is not None:
+            ax.set_title(title)
+
+        self.fig = fig
+        self.ax = ax
+
+    def save_plot(self, filename=None):
+        """
+        Save the plot to a file.
+
+        Parameters
+        ----------
+        filename : str, optional
+            Name of the file to save the plot, by default None which
+            saves the plot with the same name as the results file but
+            with a .png extension.
+        """
+        if filename is None:
+            filename = (
+                "".join(s for s in self.filename.split(".")[:-1]) + ".png"
+            )
+        self.fig.savefig(filename)
 
 
 if __name__ == "__main__":
@@ -94,6 +122,17 @@ if __name__ == "__main__":
         help="Limits for the y-axis",
         default=(None, None),
     )
+    parser.add_argument(
+        "--title",
+        type=str,
+        help="Title of the plot",
+        default=None,
+    )
+    parser.add_argument(
+        "--show",
+        action="store_true",
+        help="Show the plot instead of saving it",
+    )
     args = parser.parse_args()
 
     results_plotter = ResultsPlotter(args.filename)
@@ -102,6 +141,9 @@ if __name__ == "__main__":
         true_probability=args.true_probability,
         xlim=args.xlim,
         ylim=args.ylim,
+        title=args.title,
     )
-
-    plt.show()
+    if args.show:
+        plt.show()
+    else:
+        results_plotter.save_plot()
