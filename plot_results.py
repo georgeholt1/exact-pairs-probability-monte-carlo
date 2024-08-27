@@ -17,7 +17,7 @@ class ResultsPlotter:
     def __init__(self, filename):
         self.filename = filename
 
-    def load_results(self):
+    def load_results(self) -> np.ndarray:
         """
         Load the results of the experiment from a file.
 
@@ -32,11 +32,11 @@ class ResultsPlotter:
 
     def plot_cumulative_probability(
         self,
-        true_probability=None,
-        xlim=(None, None),
-        ylim=(None, None),
-        title=None,
-    ):
+        true_probability: float = None,
+        xlim: tuple = (None, None),
+        ylim: tuple = (None, None),
+        title: str = None,
+    ) -> None:
         """
         Plot the cumulative calculated probability of the experiment results.
 
@@ -77,7 +77,7 @@ class ResultsPlotter:
         self.fig = fig
         self.ax = ax
 
-    def save_plot(self, filename=None):
+    def save_plot(self, filename: str = None) -> None:
         """
         Save the plot to a file.
 

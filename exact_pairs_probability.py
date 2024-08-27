@@ -1,6 +1,7 @@
 import argparse
 import math
 from itertools import combinations
+from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -55,12 +56,12 @@ class ProbabilityExperiment:
         experiments and compares it with the true probability.
     """
 
-    def __init__(self, n, m, k, seed=42):
-        self.n = n
-        self.m = m
-        self.k = k
-        self.rng = np.random.default_rng(seed=seed)
-        self.results = []
+    def __init__(self, n: int, m: int, k: int, seed: int = 42) -> None:
+        self.n: int = n
+        self.m: int = m
+        self.k: int = k
+        self.rng: np.random.Generator = np.random.default_rng(seed=seed)
+        self.results: List[bool] = []
 
     def run_experiment(self):
         """
@@ -70,7 +71,7 @@ class ProbabilityExperiment:
         """
         raise NotImplementedError
 
-    def simulate_probability(self):
+    def simulate_probability(self) -> float:
         """
         Runs multiple experiments and calculates the probability of all
         participants choosing different items.
@@ -99,7 +100,7 @@ class ProbabilityExperiment:
         """
         raise NotImplementedError
 
-    def plot_results(self):
+    def plot_results(self) -> None:
         """
         Plots the calculated probability as a function of the number of
         experiments and compares it with the true probability.
@@ -126,7 +127,7 @@ class ProbabilityExperiment:
         ax.set_xlim(0, self.k)
         plt.show()
 
-    def save_results(self, filename):
+    def save_results(self, filename) -> None:
         """
         Save the results of the experiments to a file.
 
@@ -162,7 +163,7 @@ class AllUnique(ProbabilityExperiment):
         the same item.
     """
 
-    def run_experiment(self):
+    def run_experiment(self) -> bool:
         """
         Performs a single experiment to check if all participants choose
         different items.
@@ -177,7 +178,7 @@ class AllUnique(ProbabilityExperiment):
         unique_choices = np.unique(choices)
         return len(unique_choices) == self.n
 
-    def calculate_true_probability(self):
+    def calculate_true_probability(self) -> float:
         """
         Calculates the true probability of all participants choosing
         different items.
@@ -213,7 +214,7 @@ class NoExactPairs(ProbabilityExperiment):
         Calculates the true probability of no exact pairs.
     """
 
-    def run_experiment(self):
+    def run_experiment(self) -> bool:
         """
         Performs a single experiment to check if there are any exact
         pairs.
@@ -227,7 +228,7 @@ class NoExactPairs(ProbabilityExperiment):
         _, counts = np.unique(choices, return_counts=True)
         return np.all(counts != 2)
 
-    def calculate_true_probability(self):
+    def calculate_true_probability(self) -> float:
         """
         Calculates the true probability of no exact pairs.
 
@@ -266,7 +267,13 @@ class NoExactPairs(ProbabilityExperiment):
         return self.true_probability
 
 
-def main(n, m, k, experiment_type="all_unique", save_filename=None):
+def main(
+    n: int,
+    m: int,
+    k: int,
+    experiment_type: str = "all_unique",
+    save_filename: str = None,
+) -> None:
     """
     Main function to run the probability experiments, calculate
     probabilities, and plot the results.
