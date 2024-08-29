@@ -1,23 +1,34 @@
-# Exact pairs probability monte carlo simulation
+# Exact pairs probability Monte Carlo simulation
 
-Environment management is with [poetry](https://python-poetry.org/).
+This repository contains Python code to perform Monte Carlo simulations of scenarios in which a set of `n` elements is randomly drawn from a set of `m` elements, with replacement.
 
-Install dependencies with `poetry install`.
+The code is written in such a way to enable the description of any particular scenarios of interest within the context of the problem. Implementations of the following scenarios are provided:
 
-Run the simulation with `poetry run python exact_pairs_probability.py`.
+- Drawing all unique elements.
+- Drawing no pairs, but allowing for the drawing of the same element multiple times.
+
+## Installation
+
+Environment management is with [poetry](https://python-poetry.org/). Once poetry is installed, clone the repository and run `poetry install` to install the dependencies.
+
+## Usage
+
+The simulation may be run with `exact_pairs_probability.py` by executing `exact_pairs_probability.py` with the desired options. For example:
+
+```bash
+poetry run python exact_pairs_probability.py --n 5 --m 26 --k 1000000 --experiment_type all_unique
+```
+
+This will run the simulation for the scenario in which `n=5` elements are drawn from a set of `m=26` elements, with `k=1000000` iterations, and the probability that all elements are unique is calculated.
+
+Run `poetry run python exact_pairs_probability.py --help` for a list of available options.
+
+### Plotting results
+
+Results are plotted during execution of `exact_pairs_probability.py`. By passing an argument to the `--save_filename` option, the data may be saved to a file for later plotting. The `plot_results.py` script may be used to plot the results.
 
 ## For developers
 
-Start a shell with `poetry shell`.
+Set up the development environment using `poetry install` then launch a shell with `poetry shell`.
 
-Install pre-commit hooks with `pre-commit install`.
-
-## Plot results
-
-```bash
-python plot_results.py all_unique-n_5-m_26-k_1000000_results.txt --true_probability=0.664367 --xlim 0 1000000 --ylim 0.65772333 0.67101067 --title "All unique"
-```
-
-```bash
-python plot_results.py no_exact_pairs-n_5-k_10000000_results.txt --true_probability=0.677773 --xlim 0 10000000 --ylim 0.67099526 0.68455073 --title "No exact pairs"
-```
+Pre-commit hooks are available to enable automated code formatting and linting, and can be installed with `pre-commit install`.
