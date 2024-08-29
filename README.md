@@ -27,6 +27,8 @@ Run `poetry run python exact_pairs_probability.py --help` for a list of availabl
 
 Results are plotted during execution of `exact_pairs_probability.py`. By passing an argument to the `--save_filename` option, the data may be saved to a file for later plotting. The `plot_results.py` script may be used to plot the results.
 
+![Example plot](assets/results_example.png)
+
 ## For developers
 
 Set up the development environment using `poetry install` then launch a shell with `poetry shell`.
