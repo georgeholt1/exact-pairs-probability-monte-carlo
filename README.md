@@ -16,7 +16,7 @@ Environment management is with [poetry](https://python-poetry.org/). Once poetry
 The simulation may be run with `exact_pairs_probability.py` by executing `exact_pairs_probability.py` with the desired options. For example:
 
 ```bash
-poetry run python exact_pairs_probability.py --n 5 --m 26 --k 1000000 --experiment_type all_unique
+poetry run python exact_pairs_probability.py -n 5 -m 26 -k 1000000 --experiment_type all_unique
 ```
 
 This will run the simulation for the scenario in which `n=5` elements are drawn from a set of `m=26` elements, with `k=1000000` iterations, and the probability that all elements are unique is calculated.
